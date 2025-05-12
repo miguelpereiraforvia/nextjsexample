@@ -33,4 +33,12 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+          tags: ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+
+      - name: Deploy latest image to Azure Container App
+        run: |
+          az containerapp update \
+          --name $CONTAINER_APP_NAME \
+          --resource-group $AZURE_RG \
+          --image $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}
